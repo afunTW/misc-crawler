@@ -26,7 +26,7 @@ def get_urls(args):
         filepath = os.path.abspath(args.csv[0])
         df = pd.read_csv(filepath, header=None)
         df.columns = ['url']
-        urls += list(df.url)[1:5]
+        urls += list(df.url)
 
     if args.url:
         urls += [u.strip(' ') for u in args.url]
