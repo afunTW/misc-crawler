@@ -4,7 +4,7 @@ The [Google URL shortener](https://goo.gl) shows the information on the webpage
 
 > All goo.gl URLs and click analytics are public and can be accessed by anyone
 
-And we know, the URL generate by Google URL shortener follows the format of `https://goo.gl/XXX`, and the click analytics information page follows the format of `https://goo.gl/info/XXX`.
+And we know the URL generate by Google URL shortener follows the format of `https://goo.gl/XXX`, and the click analytics information page follows the format of `https://goo.gl/info/XXX`.
 
 Click analytics info page is a JavaScript-rendered page, so I build up the crawler by selenium with some simple usage.
 
