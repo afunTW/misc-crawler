@@ -6,6 +6,9 @@ import time
 from urllib.parse import urljoin
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import pandas as pd
 
@@ -43,6 +46,7 @@ def main(args):
         urls = get_urls(args)
         driver = webdriver.Chrome()
         driver.implicitly_wait(10)
+        wait = WebDriverWait(driver, 10)
 
         if not os.path.exists(save_path):
             os.makedirs(save_path)
@@ -55,14 +59,18 @@ def main(args):
             if os.path.exists(save_file):
                 continue
 
-            # process
+            # process and wait total count
             driver.get(url)
+            wait.until(EC.presence_of_element_located((
+                By.CSS_SELECTOR,
+                'body > div.main > div.analytics.content.constrain > div:nth-child(1) > div.options > div.total-clicks > div.count'
+            )))
 
             # save
             with open(save_file, 'w+') as f:
                 print('{} - #{} Save {}'.format(time.ctime(), i, save_file))
                 f.write(driver.page_source)
-                time.sleep(random.randint(1,3))
+                # time.sleep(random.randint(1,3))
 
     except Exception as e:
         print(e)
