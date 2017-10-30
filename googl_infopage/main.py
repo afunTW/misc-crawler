@@ -1,12 +1,13 @@
 import argparse
 import inspect
-import random
 import os
+import random
 import time
 from urllib.parse import urljoin
 
-import pandas as pd
 from selenium import webdriver
+
+import pandas as pd
 
 __FILE__ = os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)
 SAVE_PATH = os.path.abspath(os.path.join(__FILE__, '../data'))
@@ -17,6 +18,7 @@ def argparser():
         nargs=1, default=None)
     parser.add_argument('--url', help='given bunch of url to process',
         nargs='+', default=None)
+    parser.add_argument('--outdir', help='given the ouput directory', nargs=1, default=None)
     return parser
 
 def get_urls(args):
@@ -34,18 +36,22 @@ def get_urls(args):
     return urls
 
 def main(args):
+    global SAVE_PATH
+    save_path = args.outdir[0] or SAVE_PATH
+
     try:
         urls = get_urls(args)
         driver = webdriver.Chrome()
+        driver.implicitly_wait(10)
 
-        if not os.path.exists(SAVE_PATH):
-            os.makedirs(SAVE_PATH)
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
-        for url in urls:
+        for i, url in enumerate(urls):
             # check
             hash_id = url.split('/')[-1]
             url = urljoin(url, '/info') + '/{}'.format(hash_id)
-            save_file = os.path.join(SAVE_PATH, '{}.html'.format(hash_id))
+            save_file = os.path.join(save_path, '{}.html'.format(hash_id))
             if os.path.exists(save_file):
                 continue
 
@@ -54,7 +60,7 @@ def main(args):
 
             # save
             with open(save_file, 'w+') as f:
-                print('{} - Save {}'.format(time.ctime(), save_file))
+                print('{} - #{} Save {}'.format(time.ctime(), i, save_file))
                 f.write(driver.page_source)
                 time.sleep(random.randint(1,3))
 
