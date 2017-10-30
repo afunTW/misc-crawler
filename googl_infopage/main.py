@@ -61,14 +61,14 @@ def main(args):
 
             # process and wait total count
             driver.get(url)
-            wait.until(EC.presence_of_element_located((
-                By.CSS_SELECTOR,
-                'body > div.main > div.analytics.content.constrain > div:nth-child(1) > div.options > div.total-clicks > div.count'
+            el = wait.until(EC.presence_of_element_located((
+                By.XPATH,
+                '//div[@class="total-clicks"]/div[@class="count" and text()]'
             )))
 
             # save
             with open(save_file, 'w+') as f:
-                print('{} - #{} Save {}'.format(time.ctime(), i, save_file))
+                print('{} - #{} Save {}, count={}'.format(time.ctime(), i, save_file, el.text))
                 f.write(driver.page_source)
                 # time.sleep(random.randint(1,3))
 
